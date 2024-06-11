@@ -8,9 +8,8 @@ project_name = input('Имя проекта: ')
 while True:
     interval = input('Интервал(1, 2, 3 ...)(d, w, m): ')
 
-    if not interval[0].isdigit() \
-            or interval[1] not in ['w', 'd', 'm']:
-                continue
+    if not re.fullmatch(r'\d[wdm]', interval):
+        continue
 
     if interval[1] == 'w':
         interval = datetime.timedelta(weeks=int(interval[0]))
