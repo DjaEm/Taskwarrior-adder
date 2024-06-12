@@ -6,21 +6,24 @@ import re
 project_name = input('Имя проекта: ')
 
 while True:
-    interval = input('Интервал(1, 2, 3 ...)(d, w, m): ')
+    interval = input('Интервал(1, 2, 3 ...)(d, w, m) или (n): ')
 
-    if not re.fullmatch(r'\d[wdm]', interval):
+    if not re.fullmatch(r'(\d[wdm])|n', interval):
         continue
 
-    if interval[1] == 'w':
+    if interval[0] == 'n':
+        interval = False
+        break
+    elif interval[1] == 'w':
         interval = datetime.timedelta(weeks=int(interval[0]))
     elif interval[1] == 'd':
         interval = datetime.timedelta(days=int(interval[0]))
     else:
         interval = datetime.timedelta(weeks=4 * int(interval[0]))
-
     break
 
-dat = datetime.datetime.now() + interval
+if interval:
+    dat = datetime.datetime.now() + interval
 
 while True:
     task_num = input('Номер этапа("end" что бы закончить, num-num что бы добавить интервал): ')
@@ -30,8 +33,14 @@ while True:
     elif re.fullmatch(r'\d+-\d+', task_num):
         f_num, s_num = int(task_num.split('-')[0]), int(task_num.split('-')[1])
         for i in range(f_num, s_num + 1):
-            dat += interval
-            subprocess.run(['task', 'add', 'Complete', str(i), f'project:{project_name}', f'due:{dat}'])
+            if interval:
+                dat += interval
+                subprocess.run(['task', 'add', 'Complete', str(i), f'project:{project_name}', f'due:{dat}'])
+            else:
+                subprocess.run(['task', 'add', 'Complete', str(i), f'project:{project_name}'])
     else:
-        subprocess.run(['task', 'add', 'Complete', task_num, f'project:{project_name}', f'due:{str(dat).split()[0]}'])
-        dat += interval
+        if interval:
+            subprocess.run(['task', 'add', 'Complete', task_num, f'project:{project_name}', f'due:{str(dat).split()[0]}'])
+            dat += interval
+        else:
+            subprocess.run(['task', 'add', 'Complete', task_num, f'project:{project_name}'])
