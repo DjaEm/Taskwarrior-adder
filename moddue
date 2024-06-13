@@ -1,0 +1,19 @@
+#! /bin/python3.12
+import subprocess
+
+with open('output.txt') as file:
+    all_tasks = [i.rstrip().split() for i in file]
+    all_tasks = all_tasks[3:-2]
+
+while True:
+    subprocess.run('task')
+    task_id = input('Введите ID: ')
+    time_to_change = input('На какое время поменять: ')
+
+    if task_id == 'all':
+        for i in all_tasks:
+            subprocess.run(['task', 'modify', i[0], f'due:{time_to_change}'])
+
+    elif task_id.isdigit():
+        subprocess.run(['task', 'modify', task_id, f'due:{time_to_change}'])
+        subprocess.run('task')
