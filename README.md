@@ -1,1 +1,1 @@
-Simple script to make adding new tasks to taskwarror projects easier.
+Simple scripts to make adding new tasks to taskwarror projects easier.
